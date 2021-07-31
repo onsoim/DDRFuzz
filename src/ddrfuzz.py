@@ -58,9 +58,9 @@ if __name__=='__main__':
         fullname = os.path.join(dir_path, filename)
 
         if args.mode == 'train':
+            print('\n[*] Start training simple seq2seq model ...')
             model = train_seq2seq_model(model, train_ds, EPOCHS, early_stop_patience=PATIENCE)
-            if (os.path.isdir(dir_path) == False):
-                os.mkdir(dir_path)
+            os.makedirs(dir_path, exist_ok=True)
 
             cpfile = os.path.join(dir_path, 'checkpoint')
             if (os.path.isfile(cpfile) == True):
@@ -92,9 +92,9 @@ if __name__=='__main__':
         fullname = os.path.join(dir_path, filename)
 
         if args.mode == 'train':
+            print('\n[*] Start training seq2seq with attention model ...')
             model = train_seq2seq_model(model, train_ds, EPOCHS, early_stop_patience=PATIENCE)
-            if (os.path.isdir(dir_path) == False):
-                os.mkdir(dir_path)
+            os.makedirs(dir_path, exist_ok=True)
 
             cpfile = os.path.join(dir_path, 'checkpoint')
             if (os.path.isfile(cpfile) == True):
@@ -128,9 +128,9 @@ if __name__=='__main__':
         fullname = os.path.join(dir_path, filename)
 
         if args.mode == 'train':
+            print('\n[*] Start training transformer model ...')
             model = train_transformer_model(model, train_ds, EPOCHS, MAXLEN, early_stop_patience=PATIENCE)
-            if (os.path.isdir(dir_path) == False):
-                os.mkdir(dir_path)
+            os.makedirs(dir_path, exist_ok=True)
 
             cpfile = os.path.join(dir_path, 'checkpoint')
             if (os.path.isfile(cpfile) == True):
