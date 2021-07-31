@@ -88,7 +88,7 @@ if __name__=='__main__':
     model = Attentions(ENC_VOCAB_SIZE, DEC_VOCAB_SIZE, embedding_dim=EMBEDDING_DIM, units=LSTM_DIM,
                       sos=SOS, eos=EOS, maxlen=MAXLEN)
 
-    dir_path = './saved_model/attention'
+    dir_path = './model/attention'
     filename = 'attention_model_latest'
     fullname = os.path.join(dir_path, filename)
 
@@ -106,11 +106,11 @@ if __name__=='__main__':
             newname1 = fullname + filetime + '.index'
             newname2 = fullname + filetime + '.data-00000-of-00001'
 
-            os.rename(cpfile, os.path.join(dir_path, newcp))
-            os.rename(fullname1, os.path.join(dir_path, newname1))
-            os.rename(fullname2, os.path.join(dir_path, newname2))
+            os.rename(cpfile, newcp)
+            os.rename(fullname1, newname1)
+            os.rename(fullname2, newname2)
 
         model.save_weights(fullname)
     elif MODE == 'test':
         model.load_weights(fullname)
-        test_seq2seq_model(model, test_ds, verbose=False, save='./output/PNG')
+        test_seq2seq_model(model, test_ds, verbose=False, save='./output/PNG/attention/')

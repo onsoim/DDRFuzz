@@ -71,18 +71,14 @@ def train_seq2seq_model(model, train_ds, epochs, early_stop_patience=None):
     return model
 
 
-def test_seq2seq_model(model, test_ds, verbose=False, save=None):
+def test_seq2seq_model(model, test_ds, verbose=False, save=False):
     @tf.function  # Implement Inference
     def test_step(model, inputs):
         return model(inputs, training=False)
 
     for idx, (test_seq, test_labels) in enumerate(test_ds):
-        try:
-            prediction = test_step(model, test_seq)
-        except:
-            print('[*] error:', idx)
-            continue
-        print('idx:', idx)
+        print('[*]', idx)
+        prediction = test_step(model, test_seq)
 
         if verbose is True:
             print('====================')
@@ -91,9 +87,10 @@ def test_seq2seq_model(model, test_ds, verbose=False, save=None):
             print('- predict:', prediction)
             print('====================')
 
-        if save is not None:
-            if os.path.isdir(save) is False:
-                os.makedirs(save)
+        if save is not False:
+            if not os.path.isdir(save):
+                os.makedirs(save, exist_ok=True)
+            prediction = prediction.cpu().numpy()[0]
             vector_to_binary(prediction, data_path=save, savefile=str(idx))
 
 
@@ -138,7 +135,7 @@ def train_transformer_model(model, train_ds, epochs, maxlen, early_stop_patience
     return model
 
 
-def test_transformer_model(model, test_ds, maxlen, verbose=False, save=None):
+def test_transformer_model(model, test_ds, maxlen, verbose=False, save=False):
     def predict(model, sentence, maxlen):
         START_TOKEN, END_TOKEN = [SOS], [EOS]
         output = tf.expand_dims(START_TOKEN, 0)
@@ -151,21 +148,16 @@ def test_transformer_model(model, test_ds, maxlen, verbose=False, save=None):
         return tf.squeeze(output, axis=0)
 
     for idx, (test_seq, test_labels) in enumerate(test_ds):
-        try:
-            prediction = predict(model, test_seq, maxlen)
-        except:
-            print('[*] error:', idx)
-            continue
-        print('idx:', idx)
-
+        print('[*]', idx)
+        prediction = predict(model, test_seq, maxlen)
         if verbose is True:
             print('====================')
             print('- query:', test_seq)
             print('- label:', test_labels)
             print('- predict:', prediction)
             print('====================')
-
-        if save is not None:
-            if os.path.isdir(save) is False:
-                os.makedirs(save)
+        if save is not False:
+            if not os.path.isdir(save):
+                os.makedirs(save, exist_ok=True)
+            prediction = prediction.cpu().numpy()
             vector_to_binary(prediction, data_path=save, savefile=str(idx))

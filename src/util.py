@@ -40,10 +40,19 @@ def binary_to_vector(filename, tag=0):
 
 
 def vector_to_binary(vector_data, data_path='./dataset/', savefile=None):
+    vector_data = np.where(vector_data==EOS, 0, vector_data)
+    vector_data = np.where(vector_data==SOS, 0, vector_data)
     reverse_base64_dict = dict(map(reversed, BASE64_DICT.items()))
     ret_data = [reverse_base64_dict[x] for x in vector_data]
     ret_data = ''.join(ret_data)
-    ret_data = base64.b64decode(ret_data)
+    try:
+        ret_data = base64.b64decode(ret_data)
+    except:
+        print('Decode Error: replace default values')
+        temp_data = np.ones(len(vector_data))
+        null_data = [reverse_base64_dict[x] for x in temp_data]
+        null_data = ''.join(null_data)
+        ret_data = base64.b64decode(null_data)
 
     if savefile is not None:
         filename = os.path.join(data_path, savefile)
