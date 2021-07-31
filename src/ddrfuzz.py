@@ -15,9 +15,10 @@ if __name__=='__main__':
                         help='[seq2seq | attention | transformer]',
                         default='seq2seq')
     parser.add_argument('--mode', dest='mode', type=str,
-                        help='[train | test]', default='train')
+                        help='[train | test]', default='test')
     parser.add_argument('--path', dest='path', type=str,
                         default='../seq2seq/init_dataset/PNG/path')
+    parser.add_argument('--format', dest='format', type=str, default='AVIF')
     parser.add_argument('--maxlen', dest='maxlen', type=int, default=1000)
     parser.add_argument('--emb_dim', dest='emb_dim', type=int, default=64)
     parser.add_argument('--batch_size', dest='batch_size', type=int, default=8)
@@ -52,7 +53,7 @@ if __name__=='__main__':
         model = Seq2seq(ENC_VOCAB_SIZE, DEC_VOCAB_SIZE, embedding_dim=EMBEDDING_DIM,
                         units=256, sos=SOS, eos=EOS, maxlen=MAXLEN)
 
-        dir_path = './model/s2s/'
+        dir_path = f'./model/s2s/{args.format}'
         filename = 'simple_s2s_model_latest'
         fullname = os.path.join(dir_path, filename)
 
@@ -77,7 +78,7 @@ if __name__=='__main__':
             model.save_weights(fullname)
         else:
             model.load_weights(fullname)
-            test_seq2seq_model(model, test_ds, verbose=False, save='./output/PNG/seq2seq/')
+            test_seq2seq_model(model, test_ds, verbose=False, save=f'./output/seq2seq/{args.format}')
     # Attention Model
     elif args.model == 'attention':
         print('\n[*] Start seq2seq with attention model ...')
@@ -86,7 +87,7 @@ if __name__=='__main__':
         model = Attentions(ENC_VOCAB_SIZE, DEC_VOCAB_SIZE, embedding_dim=EMBEDDING_DIM, units=256,
                            sos=SOS, eos=EOS, maxlen=MAXLEN)
 
-        dir_path = './model/attention'
+        dir_path = f'./model/attention/{args.format}'
         filename = 'attention_model_latest'
         fullname = os.path.join(dir_path, filename)
 
@@ -111,7 +112,7 @@ if __name__=='__main__':
             model.save_weights(fullname)
         else:
             model.load_weights(fullname)
-            test_seq2seq_model(model, test_ds, verbose=False, save='./output/PNG/attention/')
+            test_seq2seq_model(model, test_ds, verbose=False, save=f'./output/attention/{args.format}')
     # Transformer Model
     elif args.model == 'transformer':
         print('\n[*] Start transformer model ...')
@@ -122,7 +123,7 @@ if __name__=='__main__':
         model = transformer(input_dim=MAXLEN, num_layers=4, dff=512,
                             d_model=EMBEDDING_DIM, num_heads=4, dropout=0.3, name="transformer")
 
-        dir_path = './model/transformer'
+        dir_path = f'./model/transformer/{args.format}'
         filename = 'transformer_model_latest'
         fullname = os.path.join(dir_path, filename)
 
@@ -147,7 +148,7 @@ if __name__=='__main__':
             model.save_weights(fullname)
         else:
             model.load_weights(fullname)
-            test_transformer_model(model, test_ds, MAXLEN, verbose=False, save='./output/PNG/transformer/')
+            test_transformer_model(model, test_ds, MAXLEN, verbose=False, save=f'./output/transformer/{args.format}')
     else:
         print('Please enter the right model name')
         print('python3 ./ddrfuzz.py --model [seq2seq|attention|transformer]')

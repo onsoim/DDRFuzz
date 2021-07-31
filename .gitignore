@@ -131,6 +131,7 @@ dmypy.json
 
 # seed directory
 projects/*/seed/
+seeds
 
 # seq2seq directory for test using jupyter notebook
 seq2seq/*
@@ -140,3 +141,4 @@ src/model/*
 
 # directory for saved output files
 src/output/*
+src/*output*
